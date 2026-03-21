@@ -982,6 +982,10 @@ let rmSelecting = false;           // flag to suppress oninput firing after sele
 // ═══════════════════════════════════════════════════
 // LOCAL STORAGE
 // ═══════════════════════════════════════════════════
+// NOTE: On GitHub Pages all apps under the same account share the same origin,
+// so localStorage keys are shared across all your hosted apps. 'mealPrepPlanner'
+// is specific enough to avoid clashes in practice — but be aware of this if you
+// ever host another app under the same GitHub Pages account.
 const LS_KEY = 'mealPrepPlanner';
 
 function loadData() {
