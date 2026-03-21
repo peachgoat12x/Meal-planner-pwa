@@ -3,7 +3,8 @@
 // Strategy: Cache-first for app shell assets; network-first is not needed
 // because all data is stored in localStorage.
 
-const CACHE_NAME = 'meal-planner-v1';
+// !! INCREMENT THIS VERSION NUMBER ON EVERY DEPLOY so users get the latest app !!
+const CACHE_NAME = 'meal-planner-v2';
 
 const PRECACHE_ASSETS = [
   './',
