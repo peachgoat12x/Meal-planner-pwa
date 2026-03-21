@@ -1606,6 +1606,7 @@ function renderHome() {
       <button class="btn-secondary" style="flex:1;font-size:13px;padding:9px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="document.getElementById('import-file').click()">${ICO_IMPORT} Import</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
     </div>
+    <div id="import-msg" style="font-size:12px;margin-top:6px;display:none"></div>
     <div style="font-size:11px;color:var(--text-muted);margin-top:7px">Export saves all your data as a JSON file. Import restores from a previous export.</div>
   </div>`;
 
@@ -3244,6 +3245,15 @@ function exportData() {
   URL.revokeObjectURL(url);
 }
 
+function validateImport(data) {
+  const arrayKeys = ['ingredients','dishes','readyMeals','shoppingList','shoppingExtras','servingGuide','customUnits'];
+  for (const k of arrayKeys) {
+    if (!Array.isArray(data[k])) return false;
+  }
+  if (!data.weeks || typeof data.weeks !== 'object' || Array.isArray(data.weeks)) return false;
+  return true;
+}
+
 function importData(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -3251,9 +3261,9 @@ function importData(event) {
   reader.onload = function(e) {
     try {
       const imported = JSON.parse(e.target.result);
-      // Basic validation — check for at least one known key
-      if (!imported.ingredients && !imported.dishes && !imported.weeks) {
-        alert('This does not appear to be a valid Meal Planner backup file.');
+      if (!validateImport(imported)) {
+        const msg = document.getElementById('import-msg');
+        if (msg) { msg.textContent = "This file doesn't look like a valid Meal Planner export. Import cancelled."; msg.style.color = 'var(--danger)'; msg.style.display = 'block'; }
         return;
       }
       if (!confirm('This will replace all your current data with the backup. Continue?')) return;
@@ -3273,9 +3283,12 @@ function importData(event) {
       }
       saveData();
       render();
-      alert('Data restored successfully.');
+      // Inject success message after render() has refreshed the DOM
+      const msg = document.getElementById('import-msg');
+      if (msg) { msg.textContent = 'Data imported successfully.'; msg.style.color = 'var(--success,green)'; msg.style.display = 'block'; }
     } catch {
-      alert('Could not read the file. Make sure it is a valid JSON backup.');
+      const msg = document.getElementById('import-msg');
+      if (msg) { msg.textContent = 'Could not read the file. Make sure it is a valid JSON backup.'; msg.style.color = 'var(--danger)'; msg.style.display = 'block'; }
     }
   };
   reader.readAsText(file);
@@ -3354,4 +3367,3 @@ window.addEventListener('appinstalled', () => {
 </script>
 </body>
 </html>
-
