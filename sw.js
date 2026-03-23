@@ -4,7 +4,7 @@
 // because all data is stored in localStorage.
 
 // !! INCREMENT THIS VERSION NUMBER ON EVERY DEPLOY so users get the latest app !!
-const CACHE_NAME = 'meal-planner-v2';
+const CACHE_NAME = 'meal-planner-20260323';
 
 const PRECACHE_ASSETS = [
   './',
